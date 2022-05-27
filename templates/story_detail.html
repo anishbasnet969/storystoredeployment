@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <section id="#stories">
+        <div class="row justify-content-around m-5">
+            <div class="col-lg-7">
+                <div class="row justify-content-center">
+                    <div class="col-12 m-3">
+                        <div class="card text-center">
+                            <div class="card-header">
+                                <div class="row justify-content-between">
+                                  <div class="col-2 text-start">
+                                    <i class="bi bi-pen-fill"></i>
+                                    {{story.writer.username}}
+                                  </div>
+                                  <div class="col-4 text-end">
+                                    {% if story.writer == request.user %}
+                                    <a href="{% url 'story_edit' story.pk %}">Edit</a> | <a href="{% url 'story_delete' story.pk %}">Delete</a>
+                                    {% endif %}
+                                  </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                              <h4 class="card-title text-center">{{story.title}}</h4>
+                              <p class="card-text text-start">{{story.body}}</p>
+                            </div>
+                            <div class="card-footer text-muted">
+                              <div class="row justify-content-between">
+                                <div class="col-3 text-start">{{story.date|date}}</div>
+                                <div class="col-3 text-end"><i class="bi bi-dot"></i>{{story.comment_set.all|length}} comments</div>
+                              </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <h2 class="ms-2">Comments</h2>
+                        {% for comment in story.comment_set.all %}
+                        <div class="card my-3 border-1 border-warning">
+                            <div class="card-body pb-0">
+                                <h5 style="display: inline;">{{comment.commenter}}</h5> <span>- {{comment.date|date}}</span>
+                                <p class="border-top border-1 mt-1 pt-1">{{comment.comment}}</p>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 d-none d-lg-block">
+                <div class="row justify-content-center">
+                    <div class="col-10">
+                        <h6 class="h6">Recent Stories</h6>
+                    </div>
+                    {% for story in recents %}
+                    <div class="col-10 m-2">
+                        <div class="card">
+                            <div class="card-body shadow border-1">
+                            <h5 class="card-title">{{story.title}}</h5>
+                            <p class="card-text">{{story.body|truncatewords:'10'}}...</p>
+                            <a href="{% url 'story_detail' story.pk %}" class="btn btn-dark text-warning">Read</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    {% if user.is_authenticated %}
+                    <div class="col-10 mt-2">
+                        <h5>Add a comment</h5>
+                        <form class="form-outline" action="" method="post">{% csrf_token %}
+                            <textarea class="form-control my-3" id="comment" name="comment" placeholder="What is your view?"></textarea>
+                            <button type="submit" class="btn btn-dark text-warning ms-1">Send <i class="fas fa-long-arrow-alt-right ms-1"></i></button>
+                        </form>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock content %}

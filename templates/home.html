@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <section id="#stories" class="pt-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-4">
+                {% for message in messages %}
+                {% if message.tags == 'error' %}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>Message:</strong> {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                {% else %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    <strong>Message:</strong> {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        <div class="row justify-content-around m-5 mt-0">
+            <div class="col-lg-6">
+                <div class="row justify-content-center">
+                    {% for story in stories %}
+                    <div class="col-12 m-3">
+                        <div class="card shadow border-1">
+                            <div class="card-header bg-warning">
+                              <i class="bi bi-pen-fill"></i>
+                              {{story.writer.username}}
+                            </div>
+                            <div class="card-body" style="background-color: #f2f2f2;">
+                              <h5 class="card-title">{{story.title}}</h5>
+                              <p class="card-text">{{story.body|truncatewords:"50"}}.....</p>
+                              <a href="{% url 'story_detail' story.pk %}" class="btn btn-dark text-warning">Read Story</a>
+                            </div>
+                            <div class="card-footer">
+                              <div class="row justify-content-between">
+                                  <div class="col-3">{{story.date|date}}</div>
+                                  <div class="col-3 text-end"><i class="bi bi-dot"></i>{{story.comment_set.all|length}} comments</div>
+                              </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="col-lg-4 d-none d-lg-block">
+                <div class="row justify-content-center">
+                    <div class="col-10">
+                        <h6 class="h6">Recent Stories</h6>
+                    </div>
+                    {% for story in recents %}
+                    <div class="col-10 m-2">
+                        <div class="card">
+                            <div class="card-body shadow border-1">
+                              <h5 class="card-title">{{story.title}}</h5>
+                              <p class="card-text">{{story.body|truncatewords:'10'}}...</p>
+                              <a href="{% url 'story_detail' story.pk %}" class="btn btn-dark text-warning">Read</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </section>
+
+{% endblock content %}
